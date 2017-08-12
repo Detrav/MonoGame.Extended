@@ -25,6 +25,8 @@ namespace MonoGame.Extended.Gui
         private GuiControl _focusedControl;
         private GuiControl _hoveredControl;
 
+        public bool MouseHandled { get; private set; } = false;
+
         public GuiSystem(ViewportAdapter viewportAdapter, IGuiRenderer renderer)
         {
             _viewportAdapter = viewportAdapter;
@@ -35,6 +37,7 @@ namespace MonoGame.Extended.Gui
             _mouseListener.MouseDown += (s, e) => OnPointerDown(GuiPointerEventArgs.FromMouseArgs(e));
             _mouseListener.MouseUp += (s, e) => OnPointerUp(GuiPointerEventArgs.FromMouseArgs(e));
             _mouseListener.MouseWheelMoved += (s, e) => _focusedControl?.OnScrolled(e.ScrollWheelDelta);
+            
 
             _touchListener = new TouchListener(viewportAdapter);
             _touchListener.TouchStarted += (s, e) => OnPointerDown(GuiPointerEventArgs.FromTouchArgs(e));
@@ -65,6 +68,8 @@ namespace MonoGame.Extended.Gui
 
         public void Update(GameTime gameTime)
         {
+            //MouseHandled = false;
+
             _touchListener.Update(gameTime);
             _mouseListener.Update(gameTime);
             _keyboardListener.Update(gameTime);
@@ -126,6 +131,8 @@ namespace MonoGame.Extended.Gui
 
             _preFocusedControl = FindControlAtPoint(args.Position);
             _hoveredControl?.OnPointerDown(this, args);
+            if (_hoveredControl?.BackgroundRegion != null)
+                MouseHandled = true;
         }
 
         private void OnPointerUp(GuiPointerEventArgs args)
@@ -153,6 +160,9 @@ namespace MonoGame.Extended.Gui
 
             _preFocusedControl = null;
             _hoveredControl?.OnPointerUp(this, args);
+            //if (_hoveredControl?.BackgroundRegion != null)
+
+            MouseHandled = false;
         }
 
         private void OnPointerMoved(GuiPointerEventArgs args)
