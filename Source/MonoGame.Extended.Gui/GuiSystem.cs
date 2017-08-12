@@ -50,7 +50,7 @@ namespace MonoGame.Extended.Gui
 
         public GuiScreenCollection Screens { get; }
 
-        public GuiScreen ActiveScreen => Screens.LastOrDefault();
+        public virtual GuiScreen ActiveScreen => Screens.LastOrDefault();
 
         public Rectangle BoundingRectangle => _viewportAdapter.BoundingRectangle;
 
